@@ -1,9 +1,11 @@
 using APICatalogo.Context;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options => options
+.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles); //no more cyclic references
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

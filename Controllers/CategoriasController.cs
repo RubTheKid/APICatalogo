@@ -1,6 +1,7 @@
 ﻿using APICatalogo.Context;
 using APICatalogo.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace APICatalogo.Controllers;
 
@@ -15,10 +16,16 @@ public class CategoriasController : ControllerBase
         _context = context;
     }
 
+    [HttpGet("Produtos")]
+    public ActionResult<IEnumerable<Categoria>> GetCategoriasProdutos()
+    {
+        return _context.Categorias.Include(p => p.Produtos).ToList();
+    }
+
     [HttpGet]
     public ActionResult<IEnumerable<Categoria>> Get()
     {
-        return _context.Categorias.ToList();
+        return _context.Categorias.AsNoTracking().Take(10).ToList();
     }
 
     [HttpGet("{id:int}", Name = "ObterCategoria")]
@@ -31,6 +38,7 @@ public class CategoriasController : ControllerBase
         }
         return Ok(categoria);
     }
+
     [HttpPost]
     public ActionResult Post(Categoria categoria)
     {
@@ -38,7 +46,6 @@ public class CategoriasController : ControllerBase
         {
             return BadRequest();
         }
-
         _context.Categorias.Add(categoria);
         _context.SaveChanges();
 
@@ -53,7 +60,6 @@ public class CategoriasController : ControllerBase
         {
             return BadRequest();
         }
-
         _context.Entry(categoria).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
         _context.SaveChanges();
 
@@ -69,7 +75,6 @@ public class CategoriasController : ControllerBase
         {
             return NotFound("Categoria não localizada.");
         }
-
         _context.Categorias.Remove(categoria);
         _context.SaveChanges();
 
