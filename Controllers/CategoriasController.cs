@@ -65,7 +65,7 @@ public class CategoriasController : ControllerBase
         {
             if (categoria == null)
             {
-                return BadRequest();
+                return BadRequest("Categoria não encontrada");
             }
             _context.Categorias.Add(categoria);
             _context.SaveChanges();
@@ -88,7 +88,7 @@ public class CategoriasController : ControllerBase
         {
             if (id != categoria.CategoriaId)
             {
-                return BadRequest();
+                return BadRequest($"Categoria {id} não encontrada");
             }
             _context.Entry(categoria).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             _context.SaveChanges();

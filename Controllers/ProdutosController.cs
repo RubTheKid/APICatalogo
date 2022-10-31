@@ -63,7 +63,7 @@ public class ProdutosController : ControllerBase
         {
             if (produto == null)
             {
-                return BadRequest();
+                return BadRequest("Produto Inválido");
             }
 
             _context.Produtos.Add(produto);
@@ -87,7 +87,7 @@ public class ProdutosController : ControllerBase
         {
             if (id != produto.ProdutoId)
             {
-                return BadRequest();
+                return BadRequest("Código de produto Inválido");
             }
 
             _context.Entry(produto).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
