@@ -19,66 +19,111 @@ public class ProdutosController : ControllerBase
     public ActionResult<IEnumerable<Produto>> Get()
     {
         var produtos = _context.Produtos.Take(32).ToList();
-        if(produtos is null)
+        try
         {
-            return NotFound("Produtos não encontrados.");
+            if (produtos is null)
+            {
+                return NotFound("Produtos não encontrados.");
+            }
+            return produtos;
         }
-        return produtos;
+        catch (Exception)
+        {
+
+            return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um problema!");
+        }
+        
+        
     }
 
     [HttpGet("{id:int}", Name = "ObterProduto")]
     public ActionResult<Produto> Get(int id)
     {
         var produto = _context.Produtos.FirstOrDefault(p => p.ProdutoId == id);
-        if(produto == null)
+        try
         {
-            return NotFound("Produto não encontrado.");
+            if (produto == null)
+            {
+                return NotFound("Produto não encontrado.");
+            }
+            return produto;
         }
-        return produto;
+        catch (Exception)
+        {
+
+            return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um problema!");
+        }
+      
     }
 
     [HttpPost]
     public ActionResult Post(Produto produto)
     {
-        if (produto == null)
-        { 
-            return BadRequest();
+        try
+        {
+            if (produto == null)
+            {
+                return BadRequest();
+            }
+
+            _context.Produtos.Add(produto);
+            _context.SaveChanges();
+
+            return new CreatedAtRouteResult("ObterProduto",
+                new { id = produto.ProdutoId }, produto);
         }
+        catch (Exception)
+        {
 
-        _context.Produtos.Add(produto);
-        _context.SaveChanges();
-
-        return new CreatedAtRouteResult("ObterProduto",
-            new { id = produto.ProdutoId }, produto);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um problema!");
+        }
+       
     }
 
     [HttpPut("{id:int}")]
     public ActionResult Put(int id, Produto produto)
     {
-        if (id != produto.ProdutoId)
+        try
         {
-            return BadRequest();
+            if (id != produto.ProdutoId)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(produto).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _context.SaveChanges();
+
+            return Ok(produto);
         }
+        catch (Exception)
+        {
 
-        _context.Entry(produto).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-        _context.SaveChanges();
-
-        return Ok(produto); 
+            return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um problema!");
+        }
+       
     }
 
     [HttpDelete("{id:int}")]
     public ActionResult Delete(int id)
     {
         var produto = _context.Produtos.FirstOrDefault(p => p.ProdutoId == id);
-
-        if (produto is null)
+        try
         {
-            return NotFound("Produto não localizado.");
+            if (produto is null)
+            {
+                return NotFound("Produto não localizado.");
+            }
+
+            _context.Produtos.Remove(produto);
+            _context.SaveChanges();
+
+            return Ok(produto);
         }
+        catch (Exception)
+        {
 
-        _context.Produtos.Remove(produto);
-        _context.SaveChanges();
-
-        return Ok(produto);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um problema!");
+        }
+        
     }
 }
