@@ -7,6 +7,7 @@ namespace APICatalogo.Controllers;
 
 [Route("[controller]")]
 [ApiController]
+
 public class CategoriasController : ControllerBase
 {
     private readonly AppDbContext _context;
